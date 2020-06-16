@@ -19,9 +19,6 @@ class GUI:
 
         self.labelPath = Label(master, text="DataSet Path: ")
 
-        vcmd = master.register(self.validate)  # we have to wrap the command
-        self.entry = Entry(master, validate="key", validatecommand=(vcmd, '%P'))
-
         self.pathTxt = Label(master)
 
         self.browseBtn = Button(master, text="Browse", command=lambda: self.browserBtn())
@@ -32,7 +29,7 @@ class GUI:
         self.numOfClusterEntry = Entry(master)
         self.numOfRunsLbl = Label(master, text="Number of runs")
         self.numOfRunsEntry = Entry(master)
-        self.clusterBtn = Button(master, text="Cluster", command=lambda: self.sendToKMeans(self.numOfClusterEntry, self.numOfRunsEntry))
+        self.clusterBtn = Button(master, text="Cluster", command=lambda: self.sendToKMeans(self.numOfClusterEntry.get(), self.numOfRunsEntry.get()))
 
         #Layout
         self.labelPath.grid(row=1, column=1)
@@ -50,7 +47,7 @@ class GUI:
         self.pathTxt.configure(text = self.fileName)
 
     def sendToKMeans(self, numOfCluster, numOfRuns):
-        ans = kmeansCalc(self.data,numOfCluster,numOfRuns)
+        ans = kmeansCalc(self.data,int(numOfCluster),int(numOfRuns))
         if ans == "success":
             mb.showinfo("Info", "kmeans completed successfully!")
         else:
@@ -63,8 +60,6 @@ class GUI:
             mb.showinfo("Info", "Preprocessing completed successfully!")
         else:
             mb.showerror("Info", "Preprocessing not completed successfully!")
-
-
 
 
 root = Tk()
