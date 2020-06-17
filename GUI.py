@@ -19,7 +19,7 @@ class GUI:
         self.master = master
         master.title("K Means Clustering")
         # self.minsize(640, 400)
-
+        vcmd = master.register(self.validate)  # we have to wrap the command
         self.labelPath = Label(master, text="DataSet Path: ")
 
         self.pathTxt = Label(master)
@@ -29,12 +29,10 @@ class GUI:
         self.preprocessingBtn = Button(master, text="Pre-process", command=lambda: self.pre(self.fileName))
 
         self.numOfClusterLbl = Label(master, text="Number of Clusters k")
-        self.numOfClusterEntry = Entry(master)
+        self.numOfClusterEntry = Entry(master, validate="key", validatecommand=(vcmd, '%P'))
         self.numOfRunsLbl = Label(master, text="Number of runs")
-        self.numOfRunsEntry = Entry(master)
+        self.numOfRunsEntry = Entry(master, validate="key", validatecommand=(vcmd, '%P'))
         self.clusterBtn = Button(master, text="Cluster", command=lambda: self.sendToKMeans(self.numOfClusterEntry.get(), self.numOfRunsEntry.get()))
-
-
 
         #Layout
         self.labelPath.grid(row=1, column=1)
@@ -47,31 +45,46 @@ class GUI:
         self.numOfRunsEntry.grid(row=4, column=2)
         self.clusterBtn.grid(row=5, column=1)
 
+    def validate(self, new_text):
+        if not new_text:  # the field is being cleared
+            self.entered_number = 0
+            return True
+
+        try:
+            self.entered_number = int(new_text)
+            return True
+        except ValueError:
+            return False
+
     def browserBtn(self):
-        self.fileName = filedialog.askopenfilename(initialdir ="/", title ="Select A File") # file type - xlsx
+        self.fileName = filedialog.askopenfilename(initialdir ="/", title ="Select A File", filetypes=[("Excel files", "*.xlsx")])
         self.pathTxt.configure(text = self.fileName)
 
     def sendToKMeans(self, numOfCluster, numOfRuns):
-        ans = kmeansCalc(self.data,int(numOfCluster),int(numOfRuns))
-        if ans == "success":
-            box = mb.askokcancel("K Means Clustering", "kmeans completed successfully! \n Do you want exit ?")
-            if box == TRUE:
-                root.destroy()
-            elif box == FALSE:
-                # scatter Plot
-                scatterPlot(self.data)
-                self.img = ImageTk.PhotoImage(Image.open("scatterPlot.png"))
-                self.panel = Label(image=self.img)
-                self.panel.grid(row=7, column=7)
-
-                # horopleth plot
-                horoplethMap(self.data)
-                self.img2 = ImageTk.PhotoImage(Image.open("horoplethMap.png"))
-                self.panel2 = Label(image=self.img2)
-                self.panel2.grid(row=7, column=1)
-
+        if numOfCluster == "" or numOfRuns == "":
+            mb.showwarning("K Means Clustering", "Please fill all the fields before click on 'Cluster'!")
         else:
-            mb.showerror("K Means Clustering", "kmeans not completed successfully!")
+            ans = kmeansCalc(self.data, int(numOfCluster), int(numOfRuns))
+            if ans == "success":
+                box = mb.askokcancel("K Means Clustering", "kmeans completed successfully! \n Do you want exit ?")
+                if box == TRUE:
+                    root.destroy()
+                elif box == FALSE:
+                    # scatter Plot
+                    scatterPlot(self.data)
+                    self.img = ImageTk.PhotoImage(Image.open("scatterPlot.png"))
+                    self.panel = Label(image=self.img)
+                    self.panel.grid(row=7, column=7)
+
+                    # horopleth plot
+                    horoplethMap(self.data)
+                    self.img2 = ImageTk.PhotoImage(Image.open("horoplethMap.png"))
+                    self.panel2 = Label(image=self.img2)
+                    self.panel2.grid(row=7, column=1)
+
+            else:
+                mb.showerror("K Means Clustering", "kmeans not completed successfully!")
+
 
     def pre(self, file):
         ans = preprocessing(file)
