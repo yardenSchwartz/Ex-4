@@ -2,9 +2,10 @@ import pandas as pd
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import chart_studio.plotly as py
+# import plotly.plotly as py
 import plotly.graph_objs as go
 
-py.sign_in('schyarde', 'QFqZeNqpcn2OaFftFKfY')
+# py.sign_in('schyarde', 'QFqZeNqpcn2OaFftFKfY')
 
 # df_data = ""
 

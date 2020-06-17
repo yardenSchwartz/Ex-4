@@ -1,10 +1,11 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox as mb
-
+# import plotly.plotly as py
+# from PIL import Image,ImageTk
 import dataManagment
 from dataManagment import *
-
+from PlotsManagement import *
 
 class GUI:
 
@@ -14,7 +15,7 @@ class GUI:
         py.sign_in('schyarde', 'QFqZeNqpcn2OaFftFKfY')
 
         self.master = master
-        master.title("K-Means Clustering")
+        master.title("K Means Clustering")
         # self.minsize(640, 400)
 
         self.labelPath = Label(master, text="DataSet Path: ")
@@ -30,6 +31,15 @@ class GUI:
         self.numOfRunsLbl = Label(master, text="Number of runs")
         self.numOfRunsEntry = Entry(master)
         self.clusterBtn = Button(master, text="Cluster", command=lambda: self.sendToKMeans(self.numOfClusterEntry.get(), self.numOfRunsEntry.get()))
+
+        # self.img = ImageTk.PhotoImage(Image.open("scatterPlot.png"))
+        # self.panel = Label(master, image=self.img)
+        # self.panel.grid(row=3, column=3)
+        #
+        # self.img2 = ImageTk.PhotoImage(Image.open("horoplethMap.png"))
+        # self.panel2 = Label(master, image=self.img2)
+        # self.panel2.grid(row=3, column=4)
+
 
         #Layout
         self.labelPath.grid(row=1, column=1)
@@ -49,17 +59,27 @@ class GUI:
     def sendToKMeans(self, numOfCluster, numOfRuns):
         ans = kmeansCalc(self.data,int(numOfCluster),int(numOfRuns))
         if ans == "success":
-            mb.showinfo("Info", "kmeans completed successfully!")
+            box = mb.askokcancel("K Means Clustering", "kmeans completed successfully!")
+            if box == TRUE:
+                root.destroy()
+            # mb.showinfo("K Means Clustering", "kmeans completed successfully!")
+
+            # scatter Plot
+            # scatterPlot(self.data)
+
+            # horopleth plot
+            # horoplethMap(self.data)
+
         else:
-            mb.showerror("Info", "kmeans not completed successfully!")
+            mb.showerror("K Means Clustering", "kmeans not completed successfully!")
 
     def pre(self, file):
         ans = preprocessing(file)
         self.data = ans[0]
         if ans[1] == "success":
-            mb.showinfo("Info", "Preprocessing completed successfully!")
+            mb.showinfo("K Means Clustering", "Preprocessing completed successfully!")
         else:
-            mb.showerror("Info", "Preprocessing not completed successfully!")
+            mb.showerror("K Means Clustering", "Preprocessing not completed successfully!")
 
 
 root = Tk()
