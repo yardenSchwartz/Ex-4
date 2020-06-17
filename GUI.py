@@ -3,6 +3,8 @@ from tkinter import filedialog
 from tkinter import messagebox as mb
 # import plotly.plotly as py
 # from PIL import Image,ImageTk
+from PIL import ImageTk,Image
+
 import dataManagment
 from dataManagment import *
 from PlotsManagement import *
@@ -32,13 +34,6 @@ class GUI:
         self.numOfRunsEntry = Entry(master)
         self.clusterBtn = Button(master, text="Cluster", command=lambda: self.sendToKMeans(self.numOfClusterEntry.get(), self.numOfRunsEntry.get()))
 
-        # self.img = ImageTk.PhotoImage(Image.open("scatterPlot.png"))
-        # self.panel = Label(master, image=self.img)
-        # self.panel.grid(row=3, column=3)
-        #
-        # self.img2 = ImageTk.PhotoImage(Image.open("horoplethMap.png"))
-        # self.panel2 = Label(master, image=self.img2)
-        # self.panel2.grid(row=3, column=4)
 
 
         #Layout
@@ -59,16 +54,21 @@ class GUI:
     def sendToKMeans(self, numOfCluster, numOfRuns):
         ans = kmeansCalc(self.data,int(numOfCluster),int(numOfRuns))
         if ans == "success":
-            box = mb.askokcancel("K Means Clustering", "kmeans completed successfully!")
+            box = mb.askokcancel("K Means Clustering", "kmeans completed successfully! \n Do you want exit ?")
             if box == TRUE:
                 root.destroy()
-            # mb.showinfo("K Means Clustering", "kmeans completed successfully!")
+            elif box == FALSE:
+                # scatter Plot
+                scatterPlot(self.data)
+                self.img = ImageTk.PhotoImage(Image.open("scatterPlot.png"))
+                self.panel = Label(image=self.img)
+                self.panel.grid(row=7, column=7)
 
-            # scatter Plot
-            # scatterPlot(self.data)
-
-            # horopleth plot
-            # horoplethMap(self.data)
+                # horopleth plot
+                horoplethMap(self.data)
+                self.img2 = ImageTk.PhotoImage(Image.open("horoplethMap.png"))
+                self.panel2 = Label(image=self.img2)
+                self.panel2.grid(row=7, column=1)
 
         else:
             mb.showerror("K Means Clustering", "kmeans not completed successfully!")
