@@ -62,8 +62,7 @@ def kmeansCalc(df_data, numOfClusters, init):
     clust_labels = kmeans.predict(dataToKMeans)
     df_data['KMeans'] = pd.Series(clust_labels, index=df_data.index)
     return "success"
-# 3.2+3.3
-# kmeansCalc(df_data, 4, 2)
+
 
 
 
