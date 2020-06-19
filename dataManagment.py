@@ -36,32 +36,37 @@ def standardize(df_data):
         df_data[column] = series_standardized
 
 def preprocessing(path):
-    """convert excel to csv file"""
-    df_data = pd.read_excel(path)
-    df_data.to_csv('Dataset.csv', sep=",")
+    try:
+        """convert excel to csv file"""
+        df_data = pd.read_excel(path)
+        df_data.to_csv('Dataset.csv', sep=",")
 
-    fillNaValuesWithAvg(df_data)
-    standardize(df_data)
+        fillNaValuesWithAvg(df_data)
+        standardize(df_data)
 
-    df_data = df_data.groupby('country', as_index=False).mean()
-    df_data = df_data.drop('year', axis=1)
+        df_data = df_data.groupby('country', as_index=False).mean()
+        df_data = df_data.drop('year', axis=1)
 
-    df_data.to_csv("Dataset.csv", index=False, header=True)
+        df_data.to_csv("Dataset.csv", index=False, header=True)
 
-
-    return (df_data, "success")
+        return (df_data, "success")
+    except:
+        return ("", "fail")
     # print(df_data.head())
 
 def kmeansCalc(df_data, numOfClusters, init):
-    kmeans = KMeans(n_clusters=numOfClusters, n_init=init)
+    try:
+        kmeans = KMeans(n_clusters=numOfClusters, n_init=init)
 
-    dataToKMeans = df_data.copy()
-    dataToKMeans = dataToKMeans.drop('country', axis=1)
+        dataToKMeans = df_data.copy()
+        dataToKMeans = dataToKMeans.drop('country', axis=1)
 
-    kmeans.fit(dataToKMeans)
-    clust_labels = kmeans.predict(dataToKMeans)
-    df_data['KMeans'] = pd.Series(clust_labels, index=df_data.index)
-    return "success"
+        kmeans.fit(dataToKMeans)
+        clust_labels = kmeans.predict(dataToKMeans)
+        df_data['KMeans'] = pd.Series(clust_labels, index=df_data.index)
+        return "success"
+    except:
+        return "fail"
 
 
 

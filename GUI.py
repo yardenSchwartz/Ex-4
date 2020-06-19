@@ -29,7 +29,7 @@ class GUI:
 
             self.labelPath = Label(master, text="DataSet Path: ")
 
-            self.pathTxt = Entry(master)
+            self.pathTxt = Entry(master, text="")
 
             self.browseBtn = Button(master, text="Browse", command=lambda: self.browserBtn())
             self.fileName = ""
@@ -41,6 +41,7 @@ class GUI:
             self.numOfRunsEntry = Entry(master,validate="key", validatecommand=(vcmdRun, '%P'))
 
             self.clusterBtn = Button(master, text="Cluster", state=DISABLED, command=lambda: self.sendToKMeans(self.numOfClusterEntry.get(), self.numOfRunsEntry.get()))
+            self.waitingLbl = Label(master, text="")
 
             #Layout
             self.labelPath.grid(row=1, column=1)
@@ -52,6 +53,7 @@ class GUI:
             self.numOfRunsLbl.grid(row=4, column=1)
             self.numOfRunsEntry.grid(row=4, column=2)
             self.clusterBtn.grid(row=5, column=1)
+            self.waitingLbl.grid(row=5, column=2)
 
         except:
             mb.showerror("K Means Clustering", "Something wrong, try again!")
@@ -119,10 +121,12 @@ class GUI:
     def browserBtn(self):
         try:
             self.fileName = filedialog.askopenfilename(initialdir ="/", title ="Select A File", filetypes=[("Excel files", "*.xlsx")])
-            # self.pathTxt.configure(text = self.fileName)
+
+            self.pathTxt.delete(0,'end')
             self.pathTxt.insert(0,self.fileName)
         except:
             mb.showerror("K Means Clustering", "Something wrong with the browser, try again!")
+            self.pathTxt.delete(0,'end')
 
     def sendToKMeans(self, numOfCluster, numOfRuns):
         try:
@@ -135,16 +139,11 @@ class GUI:
                     if num2 < 0 or num1 < 2 or num1 > 164 :
                         mb.showerror("K Means Clustering", "Please enter just positive and valid integer numbers!")
                     else:
-                        # self.numOfRunsEntry = num1
-                        # self.numOfClusterEntry = num2
+                        self.waitingLbl.config(text="Cluster is running ...")
                         ans = kmeansCalc(self.data, num1, num2)
-                        if ans == "success":
 
-                            # if box == TRUE:
-                            #     root.destroy()
-                            #     # sys.exit(-1)
-                            # elif box == FALSE:
-                                # scatter Plot
+                        if ans == "success":
+                            # scatter Plot
                             scatterPlot(self.data)
                             self.img = ImageTk.PhotoImage(Image.open("scatterPlot.png"))
                             self.panel = Label(image=self.img)
@@ -156,6 +155,8 @@ class GUI:
                             self.panel2 = Label(image=self.img2)
                             self.panel2.grid(row=7, column=1)
 
+                            self.waitingLbl.config(text="")
+
                             box = mb.askokcancel("K Means Clustering",
                                                  "kmeans completed successfully! \n Do you want exit ?")
                             if box == TRUE:
@@ -163,11 +164,16 @@ class GUI:
                                 root.quit()
 
                         else:
+                            self.waitingLbl.config(text="")
                             mb.showerror("K Means Clustering", "kmeans not completed successfully!")
 
+
                 except ValueError:
+                    self.waitingLbl.config(text="")
                     mb.showerror("K Means Clustering", "Please enter just positive integer numbers!")
+
         except:
+            self.waitingLbl.config(text="")
             mb.showerror("K Means Clustering", "Something wrong with the kMeans, try again!")
 
     def pre(self, file):
@@ -178,8 +184,11 @@ class GUI:
                 mb.showinfo("K Means Clustering", "Preprocessing completed successfully!")
             else:
                 mb.showerror("K Means Clustering", "Preprocessing not completed successfully!")
+                self.pathTxt.delete(0, 'end')
+                self.data == ""
         except:
             mb.showerror("K Means Clustering", "Something wrong with the pre-processing. \n check your file and try again!")
+
 
 root = Tk()
 my_gui = GUI(root)
