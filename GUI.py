@@ -139,23 +139,29 @@ class GUI:
                         # self.numOfClusterEntry = num2
                         ans = kmeansCalc(self.data, num1, num2)
                         if ans == "success":
+
+                            # if box == TRUE:
+                            #     root.destroy()
+                            #     # sys.exit(-1)
+                            # elif box == FALSE:
+                                # scatter Plot
+                            scatterPlot(self.data)
+                            self.img = ImageTk.PhotoImage(Image.open("scatterPlot.png"))
+                            self.panel = Label(image=self.img)
+                            self.panel.grid(row=7, column=2)
+
+                            # horopleth plot
+                            horoplethMap(self.data)
+                            self.img2 = ImageTk.PhotoImage(Image.open("horoplethMap.png"))
+                            self.panel2 = Label(image=self.img2)
+                            self.panel2.grid(row=7, column=1)
+
                             box = mb.askokcancel("K Means Clustering",
                                                  "kmeans completed successfully! \n Do you want exit ?")
                             if box == TRUE:
                                 root.destroy()
-                                # sys.exit(-1)
-                            elif box == FALSE:
-                                # scatter Plot
-                                scatterPlot(self.data)
-                                self.img = ImageTk.PhotoImage(Image.open("scatterPlot.png"))
-                                self.panel = Label(image=self.img)
-                                self.panel.grid(row=7, column=2)
+                                root.quit()
 
-                                # horopleth plot
-                                horoplethMap(self.data)
-                                self.img2 = ImageTk.PhotoImage(Image.open("horoplethMap.png"))
-                                self.panel2 = Label(image=self.img2)
-                                self.panel2.grid(row=7, column=1)
                         else:
                             mb.showerror("K Means Clustering", "kmeans not completed successfully!")
 

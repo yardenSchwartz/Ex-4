@@ -16,7 +16,6 @@ def scatterPlot(df_data):
 
 def horoplethMap(df_data):
     df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv')
-
     fig = go.Figure(data=go.Choropleth(
         locations=df['CODE'],
         z=df_data['KMeans'],
@@ -48,9 +47,3 @@ def horoplethMap(df_data):
     )
     py.image.save_as(fig, filename='horoplethMap.png')
     # fig.show()
-
-# 3.4 A
-# scatterPlot(df_data)
-
-# 3.4 B
-# horoplethMap(df_data)
