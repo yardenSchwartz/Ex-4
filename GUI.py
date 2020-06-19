@@ -1,12 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox as mb
-# import plotly.plotly as py
-# from PIL import Image,ImageTk
 from PIL import ImageTk,Image
-import sys
-
-import dataManagment
 from dataManagment import *
 from PlotsManagement import *
 
